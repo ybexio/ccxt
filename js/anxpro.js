@@ -20,6 +20,7 @@ module.exports = class anxpro extends Exchange {
                 'fetchOHLCV': false,
                 'fetchTrades': false,
                 'withdraw': true,
+                'fetchMyTrades': true,
             },
             'urls': {
                 'logo': 'https://user-images.githubusercontent.com/1294454/27765983-fd8595da-5ec9-11e7-82e3-adb3ab8c2612.jpg',
@@ -143,6 +144,14 @@ module.exports = class anxpro extends Exchange {
 
     async fetchTrades (symbol, since = undefined, limit = undefined, params = {}) {
         throw new ExchangeError (this.id + ' switched off the trades endpoint, see their docs at http://docs.anxv2.apiary.io/reference/market-data/currencypairmoneytradefetch-disabled');
+    }
+
+    async fetchMyTrades(symbol, since = undefined, limit = undefined, params = {}) {
+        let result = await this.privatePostMoneyTradeList(params)
+        return {
+            'info': result,
+            'id:': result['data'],
+        }
     }
 
     async createOrder (symbol, type, side, amount, price = undefined, params = {}) {
