@@ -166,13 +166,13 @@ module.exports = class anxpro extends Exchange {
         order['type'] = (side === 'buy') ? 'bid' : 'ask';
         let result = await this.privatePostCurrencyPairMoneyOrderAdd (this.extend (order, params));
         return {
-            'info': result,
-            'id': result['data'],
+            'info': result
         };
     }
 
     async cancelOrder (id, symbol = undefined, params = {}) {
-        return await this.privatePostCurrencyPairMoneyOrderCancel ({ 'oid': id });
+        // this.market(symbol)['id'] << to find the correct format of currency_pair needed for anxpro api
+        return await this.privatePostCurrencyPairMoneyOrderCancel({ 'oid': id, currency_pair: this.market(symbol)['id'] });
     }
 
     getAmountMultiplier (currency) {
