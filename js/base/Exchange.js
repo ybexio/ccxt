@@ -311,7 +311,8 @@ module.exports = class Exchange {
         this.throttle = throttle (this.tokenBucket)
 
         this.executeRestRequest = function (url, method = 'GET', headers = undefined, body = undefined) {
-
+            console.log('from exchange executeRestRequest url:', url);
+            console.log('from exchange executeRestRequest body:', body);
             let promise =
                 fetchImplementation (url, { method, headers, body, 'agent': this.agent || null, timeout: this.timeout })
                     .catch (e => {
