@@ -158,10 +158,10 @@ module.exports = class anxpro extends Exchange {
     let market = this.market(symbol)
     let order = {
       'currency_pair': market['id'],
-      'amount_int': parseInt(amount) // 10^8
+      'amount_int': parseInt(amount) // in satoshi
     }
     if (type === 'limit') {
-      order['price_int'] = parseInt(price * market['multiplier']) // 10^5 or 10^8
+      order['price_int'] = parseInt(price) // in satoshi
     }
     order['type'] = (side === 'buy') ? 'bid' : 'ask'
     let result = await this.privatePostCurrencyPairMoneyOrderAdd(this.extend(order, params))
@@ -193,26 +193,16 @@ module.exports = class anxpro extends Exchange {
   async withdraw (currency, amount, address, tag = undefined, params = {}) {
     this.checkAddress(address)
     await this.loadMarkets()
-    let multiplier = this.getAmountMultiplier(currency)
-    console.log('parseInt(amount * multiplier)', parseInt(amount * multiplier))
-    try {
-      const a = this.extend({
-        'currency': currency,
-        'amount_int': parseInt(amount * multiplier),
-        'address': address,
-        // 'nonce': new Date().getTime(),
-        'destinationTag': tag
-      }, params)
-      console.log('a: ', a)
-      let response = await this.privatePostMoneyCurrencySendSimple(a)
-      return {
-        'info': response,
-        'id': response['data']['transactionId']
-      }
-    } catch (e) {
-      console.log('fucl')
-      console.dir(e)
-      return 'fuck'
+    let response = await this.privatePostMoneyCurrencySendSimple(this.extend({
+      'currency': currency,
+      'amount_int': parseInt(amount),
+      'address': address,
+      // 'nonce': new Date().getTime(),
+      'destinationTag': tag
+    }, params))
+    return {
+      'info': response,
+      'id': response['data']['transactionId']
     }
   }
 
