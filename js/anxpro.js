@@ -158,7 +158,7 @@ module.exports = class anxpro extends Exchange {
     let market = this.market(symbol)
     let order = {
       'currency_pair': market['id'],
-      'amount_int': parseInt(amount * 100000000) // 10^8
+      'amount_int': parseInt(amount) // 10^8
     }
     if (type === 'limit') {
       order['price_int'] = parseInt(price * market['multiplier']) // 10^5 or 10^8
@@ -253,6 +253,8 @@ module.exports = class anxpro extends Exchange {
   }
 
   handleErrors (statusCode, statusText, url, method, requestHeaders, responseBody, json) {
-    console.log('responseBody', responseBody)
+    const error = new ExchangeError()
+    error.error = json
+    throw error
   }
 }
