@@ -158,10 +158,10 @@ module.exports = class anxpro extends Exchange {
     let market = this.market(symbol)
     let order = {
       'currency_pair': market['id'],
-      'amount_int': parseInt(amount) // in satoshi
+      'amount_int': parseInt(amount * market['multiplier']) // in satoshi
     }
     if (type === 'limit') {
-      order['price_int'] = parseInt(price) // in satoshi
+      order['price_int'] = parseInt(price * market['multiplier']) // in satoshi
     }
     order['type'] = (side === 'buy') ? 'bid' : 'ask'
     let result = await this.privatePostCurrencyPairMoneyOrderAdd(this.extend(order, params))
